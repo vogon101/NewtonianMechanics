@@ -1,0 +1,26 @@
+\lstset{
+	basicstyle=\small\ttfamily,
+	numbers=left,
+	breaklines=true,
+	postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
+	keywordstyle=\color{orange},
+	stringstyle=\color{darkgreen},
+	commentstyle=\color{gray},
+	morecomment=[l][\color{magenta}]{\#}
+}
+
+\lstdefinelanguage{Scala}{	
+	morekeywords={abstract,case,catch,class,def,
+		do,else,extends,false,final,finally,
+		for,if,implicit,import,match,mixin,
+%		new,null,object,override,package, 
+		private,protected,requires,return,sealed,
+		super,this,trait,true,try,
+		type,val,var,while,with,yield},
+	sensitive,
+	morecomment=[l]//,
+	morecomment=[n]{/*}{*/},
+	morestring=[b]",
+	morestring=[b]',
+	morestring=[b]""",
+}

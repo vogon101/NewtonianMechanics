@@ -1,0 +1,43 @@
+\documentclass[]{scrartcl}
+	
+%opening
+\title{Orbital Gravity Simulation}
+\subtitle{An implementation of newtonian mechanics in Scala and OpenGL}
+\author{Freddie Poser}
+\date{2016}
+\usepackage{hyperref} 
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage[list=true]{subcaption}
+\usepackage{import}
+
+\graphicspath{ {img/} }
+\include{includes}
+\lstset{language=Scala}
+\begin{document}
+
+
+
+
+\maketitle
+
+\begin{abstract}
+An implementation of Newtonian mechanics designed to simulate gravity and interactions between particles in two dimensions.
+\end{abstract}
+
+\tableofcontents
+\listoffigures
+\newpage
+
+\include{{sections/setup}}
+\newpage
+\include{{sections/gravity}}
+\newpage
+\include{{sections/collisions}}
+
+
+\end{document}
