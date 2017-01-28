@@ -1,0 +1,66 @@
+package com.vogonjeltz.physics.core
+
+import com.vogonjeltz.physics.math.shapes.Circle
+import com.vogonjeltz.physics.math.{Deg, Rotation, Vect}
+
+/**
+  * Particle
+  *
+  * Created by fredd
+  */
+class Particle(private var _rotation: Rotation, private var _position: Vect, val particleType: ParticleType)(implicit val universe: Universe) {
+
+  val GRAVITATIONAL_CONSTANT: Double = 6.674 * Math.pow(10, -11)
+
+  val mass: Double = particleType.mass
+  val radius: Double = particleType.radius
+
+  val DELTA_TIME = 1
+
+  private var _velocity = Vect.ZERO
+  def velocity = _velocity
+
+  def rotation: Rotation = _rotation
+  def position: Vect = _position
+
+  private var _tick = new Tick()
+  def tick: Tick = _tick
+
+  def interact(that: Particle): List[Force] = {
+    val distance = that.position.distance(position)
+    val force = (GRAVITATIONAL_CONSTANT * mass * that.mass) / Math.pow(distance, 2)
+    //println(s"this, that -> ${(this.position-that.position)}")
+    //println(s"that, this -> ${(that.position-this.position)}")
+    List(
+      Force(that, force, (this.position - that.position).theta),
+      Force(this, force, (that.position - this.position).theta)
+    )
+  }
+
+  def accept(f: Force): Unit = tick.addForce(f)
+
+  def runTick(): Unit = {
+
+    if (particleType.fixed) return
+
+    val netForce = tick.forces.map(_.toVect).foldLeft(Vect.ZERO)(_ + _)
+    //println(s"Force: $netForce")
+    val acceleration = netForce/mass
+    //println(acceleration)
+    _velocity = velocity + (acceleration * DELTA_TIME)
+    var new_position = position + (velocity * DELTA_TIME)
+    if(Math.abs(new_position.distance(position)) > 10)
+      new_position = Vect.fromAMF(new_position.theta, 10)
+
+    if(!universe.particles.filter(_ != this).exists(_.circle.intersect(new Circle(new_position, radius))))
+      _position = new_position
+
+    _tick = new Tick()
+
+  }
+
+  def circle: Circle = new Circle(position, radius)
+
+}
+
+case class ParticleType(mass: Double, radius: Double, fixed: Boolean = false)
