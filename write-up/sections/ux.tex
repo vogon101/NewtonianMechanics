@@ -1,0 +1,35 @@
+\section{User Control}
+	
+	Whilst the majority of this project is the physics, I think it is important that it is possible to interact with the simulation to be able to watch it more effectively. To this end I have built a command system which allows the user to control parts of the simulation along with certain key bindings.
+	
+	\begin{figure}[h]
+		\begin{itemize}
+			\item \textbf{+}/\textbf{-} $\rightarrow$ Speed up/slow down the simulation
+			\item \textbf{LSHIFT} + \textbf{+}/\textbf{-} $\rightarrow$ Zoom in/out
+			\item \textbf{LEFT}/\textbf{RIGHT} $\rightarrow$ Pan around the simulation horizontally
+			\item \textbf{UP}/\textbf{DOWN} $\rightarrow$ Pan around the simulation vertically
+		\end{itemize}
+		\caption{Key bindings for the simulation}
+		\label{fig:keybindings}
+	\end{figure}
+	
+	\begin{figure}[h]
+		\begin{itemize}
+			\item track $<$particle num$>$ $\rightarrow$ Track a certain particle
+			\item cleartrack $\rightarrow$ Clear the tracker, allow free movement
+			\item show $\rightarrow$ Print a list of particles to STD Out
+			\item forces $\rightarrow$ Toggle rendering of forces
+			\item col $<$on/off$>$ $\rightarrow$ Render collision forces even if force rendering disabled
+			\item particle $<$particle num$>$ $\rightarrow$ Centre view on a particle
+			\item pause $\rightarrow$ Pause the simulation
+			\item slow $\rightarrow$ Slow down the simulation to 10 UPS
+			\item 1 $\rightarrow$ Set the maximum UPS to 1 (real time)
+			\item speed $<$UPS$>$ $\rightarrow$ Set the speed of the simulation (sets max UPS)
+			
+			
+		\end{itemize}
+		\caption{Commands for the simulation}
+		\label{fig:commands}
+	\end{figure}
+	
+	

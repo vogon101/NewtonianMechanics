@@ -3,12 +3,12 @@ package com.vogonjeltz.physics.core
 /**
   * Sync class allows a method to be called a specific number of times per second without blocking the main thread
   * It does not achieve the rate perfectly but it is good enough for most purposes
-  * @param rate The number of times per second to call the functions
+  * @param _rate The number of times per second to call the functions
   * @param actions The function to be called of type (Option[I]) => R
   * @tparam I Type of the argument to the function (Wrapped in an option)
   * @tparam R Return type of the function, can be Unit
   */
-class Sync[I, R](val rate: Int, val actions: (Option[I]) => R) {
+class Sync[I, R](private var _rate: Int, val actions: (Option[I]) => R) {
 
   /**
     * Secondary constructor for use with a function that does not take an argument
@@ -19,8 +19,14 @@ class Sync[I, R](val rate: Int, val actions: (Option[I]) => R) {
     this(rate, (x: Option[Any]) => actions())
   }
 
+  def rate = _rate
+  def setRate(r: Int) = {
+    _rate = r
+    CALL_SPACING = SECOND_IN_NANO / rate
+  }
+
   private val SECOND_IN_NANO = Math.pow(1000,3)
-  private val CALL_SPACING = SECOND_IN_NANO / rate
+  private var CALL_SPACING = SECOND_IN_NANO / rate
 
   private var _lastTime : Double = System.nanoTime().toDouble
   private var _deltaTime: Double = 0

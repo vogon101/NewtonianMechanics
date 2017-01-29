@@ -1,8 +1,12 @@
 \section{Gravity}
 	For gravity I use the Newtonian equation which provides the magnitude of the force between two bodies. I calculate this during the interact function so the force is calculated between every pair of particles in the universe.
-	\begin{equation}
+	\begin{figure}[h]
+		\begin{equation}
 		F = G\frac{m_{1}m_{2}}{r^{2}}
-	\end{equation}
+		\end{equation}
+		\caption{Newton's law of Universal Gravitation}
+		\label{fig:gravEqn}
+	\end{figure}\footnote{Source: \url{https://en.wikipedia.org/wiki/Newton's_law_of_universal_gravitation}}
 	
 	Once I have the magnitude I find its direction by finding the angle between the two position vectors and it is applied to each body.
 	\begin{figure}[h]
@@ -20,6 +24,8 @@ List(
 		\caption{The gravity calculations from the Particle class}
 		\label{fig:gravCode}
 	\end{figure}
+	
+	Whilst Newtonian gravity has been superseded by Einstein's relativity it is still a good approximation in almost all situations where great precision is not required. I have used it in this project because it is much easier to implement\footnote{\url{https://en.wikipedia.org/wiki/Newton's_law_of_universal_gravitation\#Problematic_aspects}}
 	
 	\begin{figure}[p]
 		\centering

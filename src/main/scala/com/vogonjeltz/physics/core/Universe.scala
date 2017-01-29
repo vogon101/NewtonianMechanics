@@ -25,22 +25,100 @@ class Universe {
   def addParticles(ps: List[Particle]): Unit = _particles.appendAll(ps)
 
 
-  private var moveSpeed: Double = 10
-  private var maxUPS = 100
-  private var updateSync: Sync[Unit, Unit] = getNewUpdateSync
-  private var tracker: Option[Particle] = None
-  private var totalZoom:Double = 1
-
+  var moveSpeed: Double = 10
+  var maxUPS = 100
+  val updateSync: Sync[Unit, Unit] = new Sync[Unit, Unit](maxUPS, doTick _)
+  private var _tracker: Option[Particle] = None
+  var totalZoom:Double = 1
+$
   val uxSync = new Sync[Unit, Unit](60, doUX _ )
 
   private var _nextTick: Tick = new Tick()
   def nextTick: Tick = _nextTick
 
-  val graphicsManager: GraphicsManager = new GraphicsManager(new DisplaySettings {})
+  val graphicsManager: GraphicsManager = new GraphicsManager(this, new DisplaySettings {})
 
-  private def getNewUpdateSync =
-    new Sync[Unit, Unit](maxUPS, doTick _)
+  def command = uXManager.command
 
+  def tracker:String = if (_tracker.isDefined) particles.indexOf(_tracker.get).toString else ""
+
+  val commands: List[Command] = List(
+    Command("track", 1, (params: List[String]) => {
+      try{
+        val num = params.head.toInt
+        _tracker = Some(particles(num))
+        CommandSuccess(s"Tracking particle $num")
+      } catch {
+        case e: NumberFormatException => CommandFailure("Invalid number " + params.head)
+        case e: IndexOutOfBoundsException => CommandFailure("No particle of index " + params.head)
+      }
+    }),
+    Command("cleartrack", 0, (params: List[String]) => {
+      _tracker = None
+      CommandSuccess("Cleared tracker")
+    }),
+    Command("show", 0, (params: List[String]) => {
+      show()
+      CommandSuccess("Listed particles on console")
+    }),
+    Command("forces", 0,(params: List[String]) => {
+      Universe.toggleForces()
+      CommandSuccess("Toggled forces")
+    }),
+    Command("col", 1,(params: List[String]) => {
+      if (params.head == "on") {
+        Universe.setAllowForceOverride(true)
+        CommandSuccess("Turned collision force draw override on")
+      }
+      else if (params.head == "off") {
+        Universe.setAllowForceOverride(false)
+        CommandSuccess("Turned collision force draw override off")
+      }
+      else
+        CommandFailure("Invalid option ${params.head} (use on/off)")
+
+    }),
+    Command("particle", 1,(params: List[String]) => {
+      try{
+        val num = params.head.toInt
+        Render.setOffset((particles(num).position - Vect(500 * totalZoom, 500* totalZoom)) * -1)
+        CommandSuccess("Moved view to particle")
+      } catch {
+        case e: NumberFormatException => CommandFailure("Invalid number " + params.head)
+        case e: IndexOutOfBoundsException => CommandFailure("No particle of index " + params.head)
+      }
+    }),
+    Command("pause", 0,(params: List[String]) => {
+      if (maxUPS == 0)
+         maxUPS = 100
+      else
+        maxUPS = 0
+      updateSync.setRate(maxUPS)
+      CommandSuccess(s"Set max UPS to $maxUPS")
+    }),
+    Command("slow", 0,(params: List[String]) => {
+      maxUPS = 10
+      updateSync.setRate(maxUPS)
+      CommandSuccess(s"Set max UPS to $maxUPS")
+    }),
+    Command("1", 0,(params: List[String]) => {
+      maxUPS = 1
+      updateSync.setRate(maxUPS)
+      CommandSuccess(s"Set max UPS to $maxUPS")
+    }),
+    Command("speed", 1, (params: List[String]) => {
+      try{
+        val num = params.head.toInt
+        maxUPS = num
+        updateSync.setRate(maxUPS)
+        CommandSuccess(s"Set max UPS to $maxUPS")
+      } catch {
+        case e: NumberFormatException => CommandFailure("Invalid number " + params.head)
+      }
+    })
+  )
+
+  val uXManager = new UXManager(commands, this)
 
   def doTick(i: Option[Unit]): Unit = {
 
@@ -75,84 +153,25 @@ class Universe {
           Render.translateOffset(Vect(moveSpeed,0))
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-          Render.translateOffset(Vect(0,-moveSpeed))
+          Render.translateOffset(Vect(0,moveSpeed))
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-          Render.translateOffset(Vect(0,moveSpeed))
+          Render.translateOffset(Vect(0,-moveSpeed))
         }
 
       })
       updateSync.call()
       uxSync.call()
-
-      //println("Tick Over")
     }
 
   }
 
+
   def doUX (): Unit = {
     graphicsManager.setTitle(s"FPS : ${graphicsManager.fps.toString} | UPS : ${updateSync.callsLastSecond} | Max UPS : $maxUPS")
-    while(Keyboard.next()) {
-      if (Keyboard.getEventKey == Keyboard.KEY_EQUALS && Keyboard.getEventKeyState) {
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-          Render.setZoom(0.1)
-          moveSpeed *= 0.9
-          totalZoom -= 0.1
-        } else {
-          maxUPS += 100
-          updateSync = getNewUpdateSync
-        }
-      }
-      else if (Keyboard.getEventKey == Keyboard.KEY_MINUS && Keyboard.getEventKeyState) {
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-          if(Render.zoom.x > 0.1) {
-            Render.setZoom(-0.1)
-            moveSpeed *= 1.1
-            totalZoom += 0.1
-          }
-        } else if (maxUPS > 99) {
-          maxUPS -= 100
-          updateSync = getNewUpdateSync
-        }
-      }
-      else if (Keyboard.getEventKey == Keyboard.KEY_M && Keyboard.getEventKeyState) {
-        val x = -StdIn.readLine("New X > ").toDouble
-        val y = -StdIn.readLine("New Y > ").toDouble
-        Render.setOffset(Vect(x,y))
-      }
-      else if (Keyboard.getEventKey == Keyboard.KEY_S && Keyboard.getEventKeyState) {
-        show()
-      }
-      else if (Keyboard.getEventKey == Keyboard.KEY_P && Keyboard.getEventKeyState) {
-        val p = StdIn.readLine("Go to particle > ").toInt
-        Render.setOffset((particles(p).position - Vect(500, 500)) * -1)
-      }
-      else if (Keyboard.getEventKey == Keyboard.KEY_T && Keyboard.getEventKeyState) {
-        if (tracker.isDefined) {
-          tracker = None
-          println("Cleared tracker")
-        }
-        else {
-          val p = StdIn.readLine("Track particle > ").toInt
-          tracker = Some(particles(p))
-          Render.setOffset((particles(p).position - Vect(500* totalZoom, 500* totalZoom)) * -1)
-          println("Tracking particle " + p)
-        }
-      }
-      else if (Keyboard.getEventKey == Keyboard.KEY_F && Keyboard.getEventKeyState) {
-        Universe.toggleForces()
-      }
-      else if (Keyboard.getEventKey == Keyboard.KEY_0 && Keyboard.getEventKeyState) {
-        maxUPS = 0
-        updateSync = getNewUpdateSync
-      }
-      else if (Keyboard.getEventKey == Keyboard.KEY_1 && Keyboard.getEventKeyState) {
-        maxUPS = 1
-        updateSync = getNewUpdateSync
-      }
-    }
-    if (tracker.isDefined) {
-      Render.setOffset((tracker.get.position - Vect(500 * totalZoom, 500* totalZoom)) * -1)
+    uXManager.update()
+    if (_tracker.isDefined) {
+      Render.setOffset((_tracker.get.position - Vect(500 * totalZoom, 500* totalZoom)) * -1)
     }
   }
 
@@ -169,9 +188,12 @@ class Universe {
 
 object Universe {
 
-  private var _enableForces: Boolean = true
-  def enableForces:Boolean = _enableForces
-  def toggleForces():Unit = _enableForces = !_enableForces
+  private var _drawForces: Boolean = true
+  private var _allowForceOverride: Boolean = true
+  def drawForces:Boolean = _drawForces
+  def toggleForces():Unit = _drawForces = !_drawForces
+  def setAllowForceOverride(b: Boolean) = _allowForceOverride = b
+  def allowForceOverride = _allowForceOverride
 
 }
 

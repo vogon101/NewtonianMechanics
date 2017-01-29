@@ -9,12 +9,12 @@ import org.lwjgl.opengl.GL11._
   *
   * Created by fredd
   */
-case class Force (target: Particle, magnitude: Double, direction: Rotation){
+case class Force (target: Particle, magnitude: Double, direction: Rotation, alwaysDraw: Boolean = false){
 
   def toVect: Vect = Vect.fromAMF(direction, magnitude)
 
   def render():Unit = {
-    if (!Universe.enableForces) return
+    if (!(alwaysDraw && Universe.allowForceOverride) && !Universe.drawForces) return
     Render.withContext(Frame(target.position)) {
       glBegin(GL_LINE_STRIP)
       val (r,g,b) = target.particleType.colour.tuple

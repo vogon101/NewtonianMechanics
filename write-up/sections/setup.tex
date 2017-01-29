@@ -1,13 +1,16 @@
 \section{Setup}
-
-	I am building this project in Scala, a JVM programming language. The advantage of Scala is that it is multi-paradigm, allowing me to use OOP and functional programming. I am using LWJGL, an OpenGL wrapper for Java, which allows me to do proper graphics for the simulation and watch the particles in real-time.
+	
+	\sloppy
+	All of the source code is available at \burl{https://github.com/vogon101/NewtonianMechanics}
+	
+	Below is a list of a few of the core classes in the simulation
 	
 	\subsection{Universe}
-	
+		\fussy	
 		The Universe class manages the overall simulation. The key part of Universe is its list of all the particles in existence. The Universe also contains the GraphicsManager which controls all of the rendering and adds a layer of abstraction between the simulation and the OpenGL bindings. 
 		
 	\subsection{Particle}
-	
+		
 		The Particle class represents every single object in the system. The particles all have a ParticleType which defines their intrinsic properties: radius, mass, colour as well as a position vector. Each particle is able to render itself which involves drawing the appropriate circle at its location, the path that it has been on and all of the forces acting on it.
 		\linebreak\linebreak
 		The key physics is contained in the methods interact(that: Particle) and runTick():

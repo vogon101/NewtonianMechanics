@@ -1,6 +1,9 @@
 package com.vogonjeltz.physics.render
 
-import com.vogonjeltz.physics.core.Sync
+import java.awt.Font
+
+import com.vogonjeltz.physics.core.{Sync, Universe}
+import com.vogonjeltz.physics.math.Vect
 import com.vogonjeltz.physics.utils.{DisplaySettings, Log}
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.{Display, DisplayMode}
@@ -8,16 +11,17 @@ import org.lwjgl.opengl.{Display, DisplayMode}
 /**
   * Created by Freddie on 11/12/2016.
   */
-class GraphicsManager(val displaySettings: DisplaySettings) {
+class GraphicsManager(val universe: Universe, displaySettings: DisplaySettings) {
 
   val frameSync = new Sync(displaySettings.fpsCap, (f : Option[() => Unit]) => doRender(f.get))
 
   def init(): Unit = {
     // Initialize OpenGL
+
     Display.setDisplayMode( new DisplayMode( displaySettings.width, displaySettings.height ) )
     Display.create()
     Display.setTitle( displaySettings.title )
-
+    /*
     glMatrixMode( GL_MODELVIEW )
     glLoadIdentity()
     glViewport( 0, 0, displaySettings.width, displaySettings.height )
@@ -25,6 +29,16 @@ class GraphicsManager(val displaySettings: DisplaySettings) {
     glMatrixMode( GL_PROJECTION )
     glLoadIdentity()
     glOrtho( 0, Display.getWidth.toDouble, 0, Display.getHeight.toDouble, 1, -1 )
+
+    glMatrixMode( GL_MODELVIEW )
+    glLoadIdentity()*/
+    glMatrixMode( GL_MODELVIEW )
+    glLoadIdentity()
+    glViewport( 0, 0, displaySettings.width.toInt, displaySettings.height.toInt )
+
+    glMatrixMode( GL_PROJECTION )
+    glLoadIdentity()
+    glOrtho( 0, Display.getWidth.toDouble, Display.getHeight.toDouble, 0, 1, -1 )
 
     glMatrixMode( GL_MODELVIEW )
     glLoadIdentity()
@@ -47,10 +61,12 @@ class GraphicsManager(val displaySettings: DisplaySettings) {
 
     Log.verbose("Starting Render")
 
-    glScaled(Render.zoom.x, Render.zoom.y, 1)
-    Render.clearZoom()
+    //glScaled(Render.zoom.x, Render.zoom.y, 1)
+    //Render.clearZoom()
 
     f()
+
+    renderHUD()
 
     Display.update()
 
@@ -62,6 +78,26 @@ class GraphicsManager(val displaySettings: DisplaySettings) {
     } else false
 
   }
+
+  def renderHUD(): Unit = {
+
+    val forceRenderString = "Render forces " + Universe.drawForces + (if (Universe.allowForceOverride) " (Collisions oveveride: On)" else "")
+
+    Render.textContext(){
+      val strings = List(
+        "Newtonian Mechanics Simulation",
+        s"Number of bodies: ${universe.particles.length}",
+        s"Current input: ${universe.uXManager.inputBuilder.toString()}",
+        s"Last command result: ${universe.uXManager.lastResult}",
+        forceRenderString,
+        if (universe.command != "") s"Current command: ${universe.command}" else "",
+        if (universe.tracker != "") s"Current tracker: ${universe.tracker}" else ""
+      ).filter(_ != "")
+      Render.drawText(strings, new Font("Arial", Font.PLAIN, 14), frame = Frame(_position = Vect(10,10)))
+    }
+
+  }
+
 
   def fps = frameSync.callsLastSecond
 

@@ -60,8 +60,8 @@ class Particle(private var _rotation: Rotation, private var _position: Vect, val
     val impulse2 = ((v2 * m2) - (u2 * m2)) / DELTA_TIME
 
     val forces = List(
-      Force(this, impulse1.length, (this.position - that.position).theta),
-      Force(that, impulse2.length, (that.position - this.position).theta)
+      Force(this, impulse1.length, (this.position - that.position).theta, alwaysDraw = true),
+      Force(that, impulse2.length, (that.position - this.position).theta, alwaysDraw = true)
     )
 
     forces
@@ -83,7 +83,6 @@ class Particle(private var _rotation: Rotation, private var _position: Vect, val
 
   def render(): Unit = {
     Render.withContext(Frame()) {
-
       glBegin(GL_POINTS)
       for (point <- path) {
         val (r,g,b) = point.colour

@@ -7,6 +7,7 @@
 \date{2016}
 \usepackage{hyperref} 
 \usepackage{url}
+\usepackage[hyphenbreaks]{breakurl}
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage{graphicx}
@@ -33,11 +34,14 @@ An implementation of Newtonian mechanics designed to simulate gravity and intera
 \listoffigures
 \newpage
 
-\include{{sections/setup}}
+\include{sections/plan}
 \newpage
-\include{{sections/gravity}}
+\include{sections/setup}
 \newpage
-\include{{sections/collisions}}
-
+\include{sections/gravity}
+\newpage
+\include{sections/collisions}
+\newpage
+\include{sections/ux}
 
 \end{document}
