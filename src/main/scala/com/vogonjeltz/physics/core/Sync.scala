@@ -22,6 +22,8 @@ class Sync[I, R](private var _rate: Int, val actions: (Option[I]) => R) {
   def rate = _rate
   def setRate(r: Int) = {
     _rate = r
+    _sloppyModifier = 1
+    _callsLastSecond = r
     CALL_SPACING = SECOND_IN_NANO / rate
   }
 
@@ -35,6 +37,8 @@ class Sync[I, R](private var _rate: Int, val actions: (Option[I]) => R) {
   private var _callsThisSecond: Int = 0
   private var _callsLastSecond: Int = 0
 
+  private var _sloppyModifier: Double = 1
+
   /**
     * Call this in a mainloop every time it loops. This will call the function (actions) if it is the correct time. It
     * will limit it to the rate
@@ -46,7 +50,7 @@ class Sync[I, R](private var _rate: Int, val actions: (Option[I]) => R) {
     val newTime = System.nanoTime().toDouble
     //println(newTime - lastTime - CALL_SPACING)
 
-    if (newTime - lastTime >= CALL_SPACING) {
+    if (newTime - lastTime >= CALL_SPACING * _sloppyModifier) {
 
       _deltaTime = newTime - lastTime
       _lastTime = newTime
@@ -56,6 +60,10 @@ class Sync[I, R](private var _rate: Int, val actions: (Option[I]) => R) {
         _callsLastSecond = _callsThisSecond
         _lastSecondTime = _lastTime
         _callsThisSecond = 0
+        if (_callsLastSecond < rate)
+          _sloppyModifier *= 0.99
+        if (_callsLastSecond > rate)
+          _sloppyModifier *= 1.01
         //Log.info("Updates last second: " + _callsLastSecond)
       }
 
@@ -82,5 +90,7 @@ class Sync[I, R](private var _rate: Int, val actions: (Option[I]) => R) {
     * @return
     */
   def callsLastSecond = _callsLastSecond
+
+  def timingModifier = _sloppyModifier
 
 }

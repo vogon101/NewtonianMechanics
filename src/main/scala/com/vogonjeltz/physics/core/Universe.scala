@@ -30,7 +30,7 @@ class Universe {
   val updateSync: Sync[Unit, Unit] = new Sync[Unit, Unit](maxUPS, doTick _)
   private var _tracker: Option[Particle] = None
   var totalZoom:Double = 1
-$
+
   val uxSync = new Sync[Unit, Unit](60, doUX _ )
 
   private var _nextTick: Tick = new Tick()
@@ -168,7 +168,7 @@ $
 
 
   def doUX (): Unit = {
-    graphicsManager.setTitle(s"FPS : ${graphicsManager.fps.toString} | UPS : ${updateSync.callsLastSecond} | Max UPS : $maxUPS")
+    graphicsManager.setTitle(s"FPS : ${graphicsManager.fps.toString} | UPS : ${updateSync.callsLastSecond} | Max UPS : $maxUPS | Timing Modifier : ${updateSync.timingModifier}")
     uXManager.update()
     if (_tracker.isDefined) {
       Render.setOffset((_tracker.get.position - Vect(500 * totalZoom, 500* totalZoom)) * -1)
