@@ -28,7 +28,7 @@ class Sync[I, R](private var _rate: Int, val actions: (Option[I]) => R) {
   }
 
   private val SECOND_IN_NANO = Math.pow(1000,3)
-  private var CALL_SPACING = SECOND_IN_NANO / rate
+  private var CALL_SPACING = if (rate == -1) 0 else SECOND_IN_NANO / rate
 
   private var _lastTime : Double = System.nanoTime().toDouble
   private var _deltaTime: Double = 0
@@ -50,22 +50,24 @@ class Sync[I, R](private var _rate: Int, val actions: (Option[I]) => R) {
     val newTime = System.nanoTime().toDouble
     //println(newTime - lastTime - CALL_SPACING)
 
-    if (newTime - lastTime >= CALL_SPACING * _sloppyModifier) {
+    if (newTime - lastTime >= CALL_SPACING * _sloppyModifier || rate == -1) {
 
-      _deltaTime = newTime - lastTime
-      _lastTime = newTime
+        _deltaTime = newTime - lastTime
+        _lastTime = newTime
 
-      if (_lastTime - _lastSecondTime <= SECOND_IN_NANO) _callsThisSecond += 1
-      else {
-        _callsLastSecond = _callsThisSecond
-        _lastSecondTime = _lastTime
-        _callsThisSecond = 0
-        if (_callsLastSecond < rate)
-          _sloppyModifier *= 0.99
-        if (_callsLastSecond > rate)
-          _sloppyModifier *= 1.01
-        //Log.info("Updates last second: " + _callsLastSecond)
-      }
+        if (_lastTime - _lastSecondTime <= SECOND_IN_NANO) _callsThisSecond += 1
+        else {
+          _callsLastSecond = _callsThisSecond
+          _lastSecondTime = _lastTime
+          _callsThisSecond = 0
+          if (rate != -1) {
+            if (_callsLastSecond < rate)
+              _sloppyModifier *= 0.99
+            if (_callsLastSecond > rate)
+              _sloppyModifier *= 1.01
+          }
+          //Log.info("Updates last second: " + _callsLastSecond)
+        }
 
       Some(actions(argument))
 

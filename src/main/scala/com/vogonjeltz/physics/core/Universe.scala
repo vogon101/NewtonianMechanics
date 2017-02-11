@@ -3,6 +3,7 @@ package com.vogonjeltz.physics.core
 import javafx.beans.binding.ListBinding
 
 import com.vogonjeltz.physics.math.Vect
+import com.vogonjeltz.physics.output.PathTracker
 import com.vogonjeltz.physics.render.{GraphicsManager, Render}
 import com.vogonjeltz.physics.utils.{DisplaySettings, Log}
 import org.lwjgl.input.Keyboard
@@ -15,28 +16,35 @@ import scala.io.StdIn
   *
   * Created by fredd
   */
-class Universe {
+class Universe(val enableGraphics: Boolean = true, val runUntil: Int = 0, var maxUPS:Int = 100, val resolution: Double = 1) {
 
-  Log.setLevel(4)
+  Log.setLevel(1)
 
   private val _particles: ArrayBuffer[Particle] = ArrayBuffer()
   def particles: List[Particle] = _particles.toList
   def addParticle(p: Particle): Unit = _particles.append(p)
   def addParticles(ps: List[Particle]): Unit = _particles.appendAll(ps)
 
+  private var pauseOnNextCollision = false
+
 
   var moveSpeed: Double = 10
-  var maxUPS = 100
+  //var maxUPS = 100
   val updateSync: Sync[Unit, Unit] = new Sync[Unit, Unit](maxUPS, doTick _)
   private var _tracker: Option[Particle] = None
   var totalZoom:Double = 1
 
   val uxSync = new Sync[Unit, Unit](60, doUX _ )
 
+  private var _tickNum: Int = 0
+  def tickNum: Int = _tickNum
+
   private var _nextTick: Tick = new Tick()
   def nextTick: Tick = _nextTick
 
-  val graphicsManager: GraphicsManager = new GraphicsManager(this, new DisplaySettings {})
+  val graphicsManager: GraphicsManager = new GraphicsManager(this, new DisplaySettings {
+    override val enabled: Boolean = enableGraphics
+  })
 
   def command = uXManager.command
 
@@ -115,33 +123,67 @@ class Universe {
       } catch {
         case e: NumberFormatException => CommandFailure("Invalid number " + params.head)
       }
+    }),
+    Command("noCap", 0, (params: List[String]) => {
+      maxUPS = -1
+      updateSync.setRate(maxUPS)
+      CommandSuccess(s"Set max UPS to -1")
+    }),
+    Command("pauseCollision", 0, (params: List[String]) => {
+      pauseOnNextCollision = !pauseOnNextCollision
+      CommandSuccess(s"Set pauseOnNextCollision to $pauseOnNextCollision")
     })
   )
 
   val uXManager = new UXManager(commands, this)
 
+  private val _pathTrackers: ListBuffer[PathTracker] = ListBuffer()
+  val pathTrackers:List[PathTracker] = _pathTrackers.toList
+
+  def registerPathTracker(tracker: PathTracker) = _pathTrackers.append(tracker)
+
   def doTick(i: Option[Unit]): Unit = {
+    _tickNum += 1
+    if (runUntil != 0 && tickNum % 1000 == 0) {
+      println(s"Ticks Remaining ${runUntil - tickNum}")
+    }
 
     val pairs = particles.combinations(2).toList
-    val forceGroups = pairs.flatMap(T => T.head.interact(T(1))).groupBy(_.target)
+    val interactions = pairs.map(T => T.head.interact(T(1)))
+    val forceGroups:Map[Particle, List[Force]] = interactions.flatMap(_._1).groupBy(_.target)
     for(forceGroup <- forceGroups) {
       val target = forceGroup._1
-      forceGroup._2.foreach(F => target.accept(F))
+      forceGroup._2.foreach((F: Force) => target.accept(F))
+    }
+
+    val didCollide = interactions.exists(_._2)
+
+    if (didCollide && pauseOnNextCollision) {
+      maxUPS = 0
+      updateSync.setRate(maxUPS)
     }
 
     for (particle <- particles) {
       particle.runTick()
     }
+
+    for (tracker <- pathTrackers) {
+      tracker.update()
+    }
   }
 
+
+
   def mainloop(): Unit = {
-    graphicsManager.init()
+    if (enableGraphics)
+      graphicsManager.init()
     show()
 
     var running = true
 
-    while (running) {
-      running = !graphicsManager.render (() => {
+    while (running && (runUntil == 0 || tickNum < runUntil)) {
+
+      running = !enableGraphics || !graphicsManager.render (() => {
         for (particle <- particles) {
           particle.render()
         }
@@ -161,14 +203,16 @@ class Universe {
 
       })
       updateSync.call()
-      uxSync.call()
+      if (enableGraphics)
+        uxSync.call()
     }
 
   }
 
 
   def doUX (): Unit = {
-    graphicsManager.setTitle(s"FPS : ${graphicsManager.fps.toString} | UPS : ${updateSync.callsLastSecond} | Max UPS : $maxUPS | Timing Modifier : ${updateSync.timingModifier}")
+    val timeMultiplier = maxUPS * resolution
+    graphicsManager.setTitle(s"FPS : ${graphicsManager.fps.toString} | UPS : ${updateSync.callsLastSecond} | Max UPS : $maxUPS | Timing Modifier : ${updateSync.timingModifier} | Time Multiplier : $timeMultiplier | Zoom : $totalZoom")
     uXManager.update()
     if (_tracker.isDefined) {
       Render.setOffset((_tracker.get.position - Vect(500 * totalZoom, 500* totalZoom)) * -1)
@@ -176,10 +220,16 @@ class Universe {
   }
 
   def show(): Unit = {
+    var totalMomentum: Vect = Vect.ZERO
+
     println("Particles")
     for (p <- particles.zipWithIndex) {
       println(s"${p._2} -> Position ${p._1.position} | Velocity ${p._1.velocity}")
+      totalMomentum += p._1.velocity * p._1.mass
     }
+
+    println(s"Total Momentum: ${totalMomentum.length}")
+
     println(Render.offset)
   }
 

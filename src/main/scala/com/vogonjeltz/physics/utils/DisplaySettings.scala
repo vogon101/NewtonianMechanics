@@ -19,4 +19,6 @@ abstract class DisplaySettings {
 
   def setTitle(t: String) = _title = t
 
+  val enabled: Boolean = true
+
 }

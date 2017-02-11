@@ -1,4 +1,4 @@
-name := "PhysicsC2"
+name := "Newtonian Mechanics"
 
 version := "1.0"
 
@@ -71,5 +71,6 @@ compile in Compile <<= (compile in Compile).dependsOn(Def.task {
   Seq.empty[File]
 })
 
-mainClass in Compile := Some("com.vogonjeltz.physics.MainTest")
+
+mainClass in Compile := Some("com.vogonjeltz.physics.simulations.Collection")
 

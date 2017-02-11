@@ -1,4 +1,4 @@
-\section{Gravity}
+	\section{Gravity}
 	For gravity I use the Newtonian equation which provides the magnitude of the force between two bodies. I calculate this during the interact function so the force is calculated between every pair of particles in the universe.
 	\begin{figure}[h]
 		\begin{equation}
@@ -24,8 +24,10 @@ List(
 		\caption{The gravity calculations from the Particle class}
 		\label{fig:gravCode}
 	\end{figure}
+
+	This creates two vector forces, one on each object which are used during the run tick phase.
 	
-	Whilst Newtonian gravity has been superseded by Einstein's relativity it is still a good approximation in almost all situations where great precision is not required. I have used it in this project because it is much easier to implement\footnote{\url{https://en.wikipedia.org/wiki/Newton's_law_of_universal_gravitation\#Problematic_aspects}}
+	Whilst Newtonian gravity has been superseded by general relativity it is still a good approximation in almost all situations where great precision is not required and where the bodies move at low speeds. I have used it in this project because it is much easier to implement\footnote{\url{https://en.wikipedia.org/wiki/Newton's_law_of_universal_gravitation\#Problematic_aspects}}
 	
 	\begin{figure}[p]
 		\centering

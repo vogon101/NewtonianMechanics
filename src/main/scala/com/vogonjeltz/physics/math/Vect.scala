@@ -44,9 +44,19 @@ case class Vect(x: Double, y: Double) {
     sqrt(pow(diffVect.x, 2) + pow(diffVect.y, 2))
   }
 
+  def dot(that: Vect): Double =
+    (x * that.x) + (y * that.y)
+
+
   def length: Double = distance(Vect.ZERO)
 
   def abs: Vect = Vect(Math.abs(x), Math.abs(y))
+
+  def normalize: Vect = this / length
+
+  def tangent: Vect = Vect(-y, x)
+
+  def unary_- : Vect = Vect(-x, -y)
 
   def theta: Rotation = {
     val angle = Rad(atan(Math.abs(y/x)))

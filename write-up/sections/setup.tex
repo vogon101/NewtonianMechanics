@@ -25,7 +25,7 @@
 			
 			RunTick is called on every particle each time the simulation updates after all of the interactions are computed. It returns no value but instead computes the effects of the forces and updates the particles position and velocity accordingly.
 			
-			The effective input to runTick is a list of forces and it then performs the following calculations (t = 1 in this case):
+			The effective input to runTick is a list of forces and it then performs the following calculations (t = length of tick in this case):
 			
 			\begin{figure}
 				\begin{equation}
@@ -46,6 +46,8 @@
 				\caption{Movement equations used in Particle class}
 				\label{fig:movEqn}
 			\end{figure}
+		
+			These equations are based first on Newton's second law of motion which gives that the net force on an object is equal to its mass times its acceleration ($\vec{F_{R}} = m\vec{a}$). With the acceleration I find the new velocity by multiplying it by the time it acts for and adding it to the old velocity. This model assumes constant acceleration and velocity for the duration of each tick. This means that the accuracy of the model is linked to the length of the tick, with the shorter they are, the better the simulation. The position is then found by applying the velocity in the same way.
 	\newpage
 	\subsection{Rendering}
 		

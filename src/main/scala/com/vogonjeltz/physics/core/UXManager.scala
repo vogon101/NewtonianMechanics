@@ -66,9 +66,9 @@ class UXManager(val commands: List[Command], val universe: Universe) {
       if (Keyboard.getEventKeyState) {
         if (Keyboard.getEventKey == Keyboard.KEY_EQUALS && Keyboard.getEventKeyState) {
           if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            Render.setZoom(0.1)
-            universe.moveSpeed *= 0.9
-            universe.totalZoom -= 0.1
+            Render.setZoom(0.5)
+            //universe.moveSpeed *= 0.9
+            universe.totalZoom *= 0.5
           } else {
             universe.maxUPS += 100
             universe.updateSync.setRate(universe.maxUPS)
@@ -77,9 +77,9 @@ class UXManager(val commands: List[Command], val universe: Universe) {
         else if (Keyboard.getEventKey == Keyboard.KEY_MINUS && Keyboard.getEventKeyState) {
           if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             if(Render.zoom.x > 0.1) {
-              Render.setZoom(-0.1)
-              universe.moveSpeed *= 1.1
-              universe.totalZoom += 0.1
+              Render.setZoom(-0.5)
+              universe.moveSpeed *= 1.5
+              universe.totalZoom *= 1.3
             }
           } else if (universe.maxUPS > 99) {
             universe.maxUPS -= 100
@@ -87,7 +87,7 @@ class UXManager(val commands: List[Command], val universe: Universe) {
           }
         }
 
-        if (Keyboard.getEventCharacter.isLetterOrDigit || Keyboard.getEventCharacter == ' ') {
+        if (Keyboard.getEventCharacter.isLetterOrDigit || Keyboard.getEventCharacter == ' ' || Keyboard.getEventCharacter == '.') {
           inputBuilder.append(Keyboard.getEventCharacter)
         }
         else if (Keyboard.getEventKey == Keyboard.KEY_BACK) {

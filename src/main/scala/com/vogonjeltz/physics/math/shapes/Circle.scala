@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11._
   * @param _centre The centre of the circle
   * @param radius The radius of the circle
   */
-class Circle (private val _centre: Vect, val radius: Double, colour: Colour = Colour.WHITE, val filled: Boolean = true) extends Shape[Circle](_centre){
+class Circle (private val _centre: Vect, val radius: Double, colour: Colour = Colour.WHITE, val filled: Boolean = false) extends Shape[Circle](_centre){
 
   override def translate(v: Vect) = new Circle(position + v, radius)
 
