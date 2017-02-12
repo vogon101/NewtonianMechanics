@@ -15,14 +15,14 @@ class Circle (private val _centre: Vect, val radius: Double, colour: Colour = Co
 
   override def frame: Frame = Frame(position, colour)
 
-  override def contains(v: Vect) =
+  override def contains(v: Vect): Boolean =
     math.abs(v.distance(position)) <= radius
 
   def intersect(that: Circle):Boolean =
     Math.abs(that.position.distance(this.position)) <= radius + that.radius
 
 
-  override def render() = {
+  override def render(): Unit = {
     if (filled)
       Render.withContext(frame) {
         var x2, y2:Double = 0

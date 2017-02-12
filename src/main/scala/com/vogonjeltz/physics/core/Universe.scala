@@ -225,7 +225,7 @@ class Universe(val enableGraphics: Boolean = true, val runUntil: Int = 0, var ma
     println("Particles")
     for (p <- particles.zipWithIndex) {
       println(s"${p._2} -> Position ${p._1.position} | Velocity ${p._1.velocity}")
-      totalMomentum += p._1.velocity * p._1.mass
+      totalMomentum += p._1.momentum
     }
 
     println(s"Total Momentum: ${totalMomentum.length}")

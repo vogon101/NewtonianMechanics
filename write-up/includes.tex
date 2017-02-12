@@ -1,22 +1,29 @@
+\definecolor{code-green}{HTML}{29d875}
+\definecolor{code-blue}{HTML}{297bd8}
+
 \lstset{
 	basicstyle=\small\ttfamily,
 	numbers=left,
 	breaklines=true,
 	postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
 	keywordstyle=\color{orange},
+	keywordstyle=[2]\color{code-blue},
+	keywordstyle=[3]\color{code-green},
 	stringstyle=\color{darkgreen},
 	commentstyle=\color{gray},
-	morecomment=[l][\color{magenta}]{\#}
+	morecomment=[l][\color{magenta}]{\#},
 }
 
 \lstdefinelanguage{Scala}{	
+	keywords=[2]{List},
+	keywords=[3]{that, DELTA\_TIME},
 	morekeywords={abstract,case,catch,class,def,
 		do,else,extends,false,final,finally,
 		for,if,implicit,import,match,mixin,
-%		new,null,object,override,package, 
+		new,null,object,override,package, 
 		private,protected,requires,return,sealed,
 		super,this,trait,true,try,
-		type,val,var,while,with,yield},
+		type,val,var,while,with,yield,Double},
 	sensitive,
 	morecomment=[l]//,
 	morecomment=[n]{/*}{*/},

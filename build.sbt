@@ -74,3 +74,5 @@ compile in Compile <<= (compile in Compile).dependsOn(Def.task {
 
 mainClass in Compile := Some("com.vogonjeltz.physics.simulations.Collection")
 
+target in (Compile, compile) in doc := baseDirectory.value / "docs"
+

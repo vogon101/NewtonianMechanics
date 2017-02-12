@@ -1,0 +1,278 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>core - Newtonian Mechanics documentation - com.vogonjeltz.physics.core</title>
+          <meta name="description" content="core - Newtonian Mechanics documentation - com.vogonjeltz.physics.core" />
+          <meta name="keywords" content="core Newtonian Mechanics documentation com.vogonjeltz.physics.core" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'com.vogonjeltz.physics.core.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.vogonjeltz">vogonjeltz</a>.<a href="../package.html" class="extype" name="com.vogonjeltz.physics">physics</a></p>
+        <h1>core</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">core</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.vogonjeltz.physics.core.Command" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CommandextendsProductwithSerializable"></a>
+      <a id="Command:Command"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Command.html"><span class="name">Command</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="paramLength">paramLength: <span class="extype" name="scala.Int">Int</span></span>, <span name="f">f: (<span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]) ⇒ <a href="CommandResult.html" class="extype" name="com.vogonjeltz.physics.core.CommandResult">CommandResult</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.vogonjeltz.physics.core.CommandFailure" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CommandFailureextendsCommandResultwithProductwithSerializable"></a>
+      <a id="CommandFailure:CommandFailure"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CommandFailure.html"><span class="name">CommandFailure</span></a><span class="params">(<span name="text">text: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="CommandResult.html" class="extype" name="com.vogonjeltz.physics.core.CommandResult">CommandResult</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.vogonjeltz.physics.core.CommandResult" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CommandResultextendsAnyRef"></a>
+      <a id="CommandResult:CommandResult"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="CommandResult.html"><span class="name">CommandResult</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.vogonjeltz.physics.core.CommandSuccess" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CommandSuccessextendsCommandResultwithProductwithSerializable"></a>
+      <a id="CommandSuccess:CommandSuccess"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CommandSuccess.html"><span class="name">CommandSuccess</span></a><span class="params">(<span name="text">text: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="CommandResult.html" class="extype" name="com.vogonjeltz.physics.core.CommandResult">CommandResult</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.vogonjeltz.physics.core.Force" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ForceextendsProductwithSerializable"></a>
+      <a id="Force:Force"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Force.html"><span class="name">Force</span></a><span class="params">(<span name="target">target: <a href="Particle.html" class="extype" name="com.vogonjeltz.physics.core.Particle">Particle</a></span>, <span name="magnitude">magnitude: <span class="extype" name="scala.Double">Double</span></span>, <span name="direction">direction: <a href="../math/Rotation.html" class="extype" name="com.vogonjeltz.physics.math.Rotation">Rotation</a></span>, <span name="alwaysDraw">alwaysDraw: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Force</p>
+    </li><li name="com.vogonjeltz.physics.core.Particle" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ParticleextendsAnyRef"></a>
+      <a id="Particle:Particle"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Particle.html"><span class="name">Particle</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Particle</p>
+    </li><li name="com.vogonjeltz.physics.core.ParticleType" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ParticleTypeextendsProductwithSerializable"></a>
+      <a id="ParticleType:ParticleType"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ParticleType.html"><span class="name">ParticleType</span></a><span class="params">(<span name="mass">mass: <span class="extype" name="scala.Double">Double</span></span>, <span name="radius">radius: <span class="extype" name="scala.Double">Double</span></span>, <span name="colour">colour: <a href="../render/Colour.html" class="extype" name="com.vogonjeltz.physics.render.Colour">Colour</a> = <span class="defval" name="com.vogonjeltz.physics.render.Colour.WHITE">...</span></span>, <span name="fixed">fixed: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.vogonjeltz.physics.core.PathPoint" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PathPointextendsProductwithSerializable"></a>
+      <a id="PathPoint:PathPoint"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="PathPoint.html"><span class="name">PathPoint</span></a><span class="params">(<span name="position">position: <a href="../math/Vect.html" class="extype" name="com.vogonjeltz.physics.math.Vect">Vect</a></span>, <span name="speed">speed: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.vogonjeltz.physics.core.Sync" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Sync[I,R]extendsAnyRef"></a>
+      <a id="Sync[I,R]:Sync[I,R]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Sync.html"><span class="name">Sync</span></a><span class="tparams">[<span name="I">I</span>, <span name="R">R</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Sync class allows a method to be called a specific number of times per second without blocking the main thread
+It does not achieve the rate perfectly but it is good enough for most purposes</p>
+    </li><li name="com.vogonjeltz.physics.core.Tick" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TickextendsAnyRef"></a>
+      <a id="Tick:Tick"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Tick.html"><span class="name">Tick</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.vogonjeltz.physics.core.UX" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UXextendsAnyRef"></a>
+      <a id="UX:UX"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="UX.html"><span class="name">UX</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">UX</p>
+    </li><li name="com.vogonjeltz.physics.core.UXManager" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UXManagerextendsAnyRef"></a>
+      <a id="UXManager:UXManager"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="UXManager.html"><span class="name">UXManager</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Created by Freddie on 29/01/2017.</p>
+    </li><li name="com.vogonjeltz.physics.core.Universe" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UniverseextendsAnyRef"></a>
+      <a id="Universe:Universe"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Universe.html"><span class="name">Universe</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Universe</p>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="com.vogonjeltz.physics.core.Universe" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Universe"></a>
+      <a id="Universe:Universe"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Universe$.html"><span class="name">Universe</span></a>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
+    </body>
+      </html>

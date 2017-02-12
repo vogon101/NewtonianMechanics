@@ -76,13 +76,13 @@ case class Pool() extends Simulation {
 
   override def run() = {
 
-    implicit val universe = new Universe(enableGraphics = true, runUntil = 365 * 24 * 10, maxUPS = 1, resolution = 1)
+    implicit val universe = new Universe(enableGraphics = true, runUntil = 365 * 24 * 10, maxUPS = 100, resolution = 0.01)
     val red = ParticleType(1, 10, Colour.RED)
     val yellow = ParticleType(1, 10, Colour.YELLOW)
     val white = ParticleType(1, 10, Colour.WHITE)
 
     universe.addParticles(List(
-      white(Vect(100, 300), Vect(6, 0)),
+      white(Vect(100, 350), Vect(20, -3)),
       yellow(Vect(300, 300)),
       red(Vect(320, 290)),
       red(Vect(320, 310)),
