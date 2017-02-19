@@ -44,7 +44,6 @@ class Particle(private var _rotation: Rotation, private var _position: Vect, val
     * @return List of the forces generated
     */
   def collide (that: Particle): List[Force] = {
-
     val normal = (that.position - this.position).normalize
     val tangent = normal.tangent
 

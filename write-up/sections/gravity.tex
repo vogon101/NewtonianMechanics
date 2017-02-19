@@ -1,14 +1,14 @@
 	\section{Gravity}
-	For gravity I use the Newtonian equation which provides the magnitude of the force between two bodies. I calculate this during the interact function so the force is calculated between every pair of particles in the universe.
+	For gravity I use the Newtonian equation which provides the magnitude of the force between two bodies. I calculate this during the interact function so the force is calculated between every pair of particles in the universe.\footnote{\url{https://en.wikipedia.org/wiki/Newton's_law_of_universal_gravitation}}
 	\begin{figure}[h]
 		\begin{equation}
 		F = G\frac{m_{1}m_{2}}{r^{2}}
 		\end{equation}
 		\caption{Newton's law of Universal Gravitation}
 		\label{fig:gravEqn}
-	\end{figure}\footnote{Source: \url{https://en.wikipedia.org/wiki/Newton's_law_of_universal_gravitation}}
+	\end{figure}
 	
-	Once I have the magnitude I find its direction by finding the angle between the two position vectors and it is applied to each body.
+	Once I have the magnitude, I find its direction by finding the angle between the two position vectors and it is applied to each body.
 	\begin{figure}[h]
 		\centering
 		\begin{lstlisting}[language=Scala]
@@ -25,23 +25,23 @@ List(
 		\label{fig:gravCode}
 	\end{figure}
 
-	This creates two vector forces, one on each object which are used during the run tick phase.
+	This creates two vector forces, one on each object which are used during the \code{runTick} phase.
 	
-	Whilst Newtonian gravity has been superseded by general relativity it is still a good approximation in almost all situations where great precision is not required and where the bodies move at low speeds. I have used it in this project because it is much easier to implement\footnote{\url{https://en.wikipedia.org/wiki/Newton's_law_of_universal_gravitation\#Problematic_aspects}}
+	Whilst Newtonian gravity has been superseded by general relativity it is still a good approximation in almost all situations where great precision is not required and where the bodies move at low speeds. I have used it in this project because it is easier to implement.\footnote{\url{https://en.wikipedia.org/wiki/Newton's_law_of_universal_gravitation\#Problematic_aspects}}
 	
 	\begin{figure}[p]
 		\centering
 		\begin{subfigure}{0.9\textwidth}
 			\centering
 			\includegraphics[width=\textwidth]{gravity1}
-			\caption{One body in orbit, the orbit is perfectly stable in this case. The green line is the force on the planet.}
+			\caption{One body in orbit; the orbit is perfectly stable in this case. The green line is the force on the planet.}
 			\label{fig:gravExamplesSub1}
 			\ref{fig:gravExamplesSub1}
 		\end{subfigure}
 		\begin{subfigure}{0.9\textwidth}
 			\centering
 			\includegraphics[width=\textwidth]{gravity2}
-			\caption{Two bodies in orbit, one is on a more stable orbit whilst the outer one moves more erratically} 
+			\caption{Two bodies in orbit; one is on a more stable orbit whilst the outer one moves more erratically} 
 			\label{fig:gravExamplesSub2}
 			\ref{fig:gravExamplesSub2}
 		\end{subfigure}	

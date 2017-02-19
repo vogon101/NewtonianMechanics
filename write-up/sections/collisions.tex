@@ -1,5 +1,5 @@
 \section{Momentum  and Collisions}
-	Once I had implemented gravity I decided to add in simple 2D collisions to make the simulation slightly more realistic. This turned out to be far more difficult than I had expected. The problem was that many of the equations used for this are very complicated when used with vectors in two dimensions.
+	Having implemented gravity I decided to add in simple 2D collisions to make the simulation slightly more realistic. This turned out to be more difficult than I had expected as many of the equations used for this are very complicated when used with vectors in two dimensions.
 	
 	I found online\footnote{Source: \url{http://vobarian.com/collisions/2dcollisions2.pdf}} a set of equations designed for fully elastic vector collisions. These are derived from two equations: Conservation of momentum and of kinetic energy:
 	
@@ -19,7 +19,7 @@
 	
 	This is done by taking the unit vectors in the directions normal and tangent to the collision. It is then possible to find the velocities of each particle in these directions by taking the dot product of the vectors. In the following equations $\vec{normal}$ and $\vec{tangent}$ are the unit tangent and normal vectors respectively.
 	
-	I will only consider the first particle as because of Newton's Second Law of motion the force produced by this collision will be the same on both particles. This means that once I find the final velocity of the first particle I can find the change in momentum and thus the magnitude of the force by using $F = \frac{\delta p}{\delta t}$
+	I will only consider the first particle as because of Newton's Second Law of motion the force produced by this collision will be the same on both particles. This means that once I find the final velocity of the first particle I can find the change in momentum and thus the magnitude of the force by using $F = \frac{\Delta p}{\Delta t}$
 	
 	\begin{figure}[h!]
 		\begin{equation}
@@ -62,7 +62,7 @@
 		\label{fig:movEqn}
 	\end{figure}
 
-	As my simulation is built around forces I want to find the forces produced from this. To do this I use the equation above to calculate the magnitude and then create two forces as vectors of that length: One in the direction of $p_1-p_2$ (where $p_1$ is the position vector of particle 1) and one in the opposite direction.
+	As my simulation is built around forces, I want to find the forces produced from this. To do this I use the equation above to calculate the magnitude and then create two forces as vectors of that length: One in the direction of $p_1-p_2$ (where $p_1$ is the position vector of particle 1) and one in the opposite direction.
 
 	The code that calculates this is listed below:
 	

@@ -4,6 +4,7 @@ import com.vogonjeltz.physics.core.{Particle, ParticleType, Universe}
 import com.vogonjeltz.physics.math.Vect
 import com.vogonjeltz.physics.output.PathTracker
 import com.vogonjeltz.physics.render.Colour
+import com.vogonjeltz.physics.utils.Log
 
 import scala.io.StdIn
 
@@ -14,15 +15,25 @@ import scala.io.StdIn
   */
 object Collection extends App {
 
-  val simulations: Map[String, Simulation] = Map("earth" -> EarthOrbit(), "collision" -> Collision(), "orbit" -> OrbitSim(), "pool" -> Pool(), "test" -> Test())
+  val simulations: Map[String, Simulation] = Map("earth" -> EarthOrbit(), "collision" -> Collision(), "orbit" -> OrbitSim(), "pool" -> Pool(), "test" -> Test(), "pool2" -> Pool2())
 
-  val default: String = "pool"
+  val default: String = "pool2"
 
-  val input = StdIn.readLine(">>>")
-  if (simulations.contains(input)) {
-    simulations(input).run()
-  } else {
-    simulations(default).run()
+  var next: String = ""
+
+  run(default)
+
+  def run(input: String): Unit = {
+    if (simulations.contains(input)) {
+      Log.success(s"Running simulation $input")
+      simulations(input).run()
+    } else {
+      Log.error(s"Cannot find simulation $input, defaulting to $default")
+      simulations(default).run()
+    }
+    Log.info("Simulation Ended")
+    //TODO: This would cause SO error if someone was crazy enough to keep running simulations, fix pls
+    if (next != "") run(next)
   }
 
 }
@@ -115,32 +126,31 @@ case class Pool2() extends Simulation {
     val yellow = ParticleType(1, 0.1, Colour.YELLOW)
     val white = ParticleType(1, 0.1, Colour.WHITE)
 
-    implicit class DoubleE(d: Double) {
-
-      def e: Double = d/100
-
-    }
 
     universe.addParticles(List(
-      white(Vect(100 e, 300 e), Vect(1, 0)),
-      yellow(Vect(300 e, 300 e)),
-      red(Vect(320 e, 290 e)),
-      red(Vect(320 e, 310 e)),
-      red(Vect(340 e, 320 e)),
-      white(Vect(340 e, 300 e)),
-      yellow(Vect(340 e, 280 e)),
-      yellow(Vect(360 e, 270 e)),
-      red(Vect(360 e, 290 e)),
-      yellow(Vect(360 e, 310 e)),
-      yellow(Vect(360 e, 330 e)),
-      yellow(Vect(380 e, 340 e)),
-      red(Vect(380 e, 320 e)),
-      red(Vect(380 e, 300 e)),
-      yellow(Vect(380 e, 280 e)),
-      red(Vect(380 e, 260 e))
+      white(Vect(0, -1), Vect(5, 1.3)),
+      yellow(Vect(1, 0)),
+      red(Vect(1.2, -0.1)),
+      red(Vect(1.2, 0.1)),
+      red(Vect(1.4, -0.2)),
+      white(Vect(1.4, 0)),
+      yellow(Vect(1.4, 0.2)),
+      yellow(Vect(1.6, 0.3)),
+      red(Vect(1.6, 0.1)),
+      yellow(Vect(1.6, -0.1)),
+      yellow(Vect(1.6, -0.3)),
+      yellow(Vect(1.8, -0.4)),
+      red(Vect(1.8, -0.2)),
+      red(Vect(1.8, 0)),
+      yellow(Vect(1.8, 0.2)),
+      red(Vect(1.8, 0.4))
     ))
 
+    universe.uXManager.runCommand("particle", List("0"))
+    universe.uXManager.runCommand("scale", List("cm"))
+
     universe.mainloop()
+
 
   }
 
@@ -155,7 +165,28 @@ case class Test() extends Simulation {
     val small = ParticleType(10, 10, Colour.YELLOW)
     universe.addParticles(List(
       big(Vect(500, 300)),
-      small(Vect(0, 300), Vect(2, 0))
+      small(Vect(0, 300), Vect(5, 0)),
+      small(Vect(0, 321), Vect(5, 0)),
+      small(Vect(0, 342), Vect(5, 0)),
+      small(Vect(0, 363), Vect(5, 0)),
+      small(Vect(0, 279), Vect(5, 0)),
+      small(Vect(0, 258), Vect(5, 0)),
+      small(Vect(0, 237), Vect(5, 0)),
+      small(Vect(0, 216), Vect(5, 0)),
+      small(Vect(0, 195), Vect(5, 0)),
+      small(Vect(0, 384), Vect(5, 0)),
+      small(Vect(0, 405), Vect(5, 0)),
+      small(Vect(-30, 300), Vect(5, 0)),
+      small(Vect(-30, 321), Vect(5, 0)),
+      small(Vect(-30, 342), Vect(5, 0)),
+      small(Vect(-30, 363), Vect(5, 0)),
+      small(Vect(-30, 279), Vect(5, 0)),
+      small(Vect(-30, 258), Vect(5, 0)),
+      small(Vect(-30, 237), Vect(5, 0)),
+      small(Vect(-30, 216), Vect(5, 0)),
+      small(Vect(-30, 195), Vect(5, 0)),
+      small(Vect(-30, 384), Vect(5, 0)),
+      small(Vect(-30, 405), Vect(5, 0))
     ))
 
     universe.mainloop()

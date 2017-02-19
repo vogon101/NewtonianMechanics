@@ -1,10 +1,12 @@
 package com.vogonjeltz.physics.core
 
+import java.text.CollationElementIterator
 import javafx.beans.binding.ListBinding
 
 import com.vogonjeltz.physics.math.Vect
 import com.vogonjeltz.physics.output.PathTracker
 import com.vogonjeltz.physics.render.{GraphicsManager, Render}
+import com.vogonjeltz.physics.simulations.Collection
 import com.vogonjeltz.physics.utils.{DisplaySettings, Log}
 import org.lwjgl.input.Keyboard
 
@@ -25,7 +27,8 @@ class Universe(val enableGraphics: Boolean = true, val runUntil: Int = 0, var ma
   def addParticle(p: Particle): Unit = _particles.append(p)
   def addParticles(ps: List[Particle]): Unit = _particles.appendAll(ps)
 
-  private var pauseOnNextCollision = false
+  private var _pauseOnNextCollision = false
+  def pauseOnNextCollision: Boolean = _pauseOnNextCollision
 
 
   var moveSpeed: Double = 10
@@ -83,13 +86,13 @@ class Universe(val enableGraphics: Boolean = true, val runUntil: Int = 0, var ma
         CommandSuccess("Turned collision force draw override off")
       }
       else
-        CommandFailure("Invalid option ${params.head} (use on/off)")
+        CommandFailure(s"Invalid option ${params.head} (use on/off)")
 
     }),
     Command("particle", 1,(params: List[String]) => {
       try{
         val num = params.head.toInt
-        Render.setOffset((particles(num).position - Vect(500 * totalZoom, 500* totalZoom)) * -1)
+        Render.setOffset((particles(num).position * totalZoom - Vect(graphicsManager.displaySettings.width / 2, graphicsManager.displaySettings.height / 2)) * -1)
         CommandSuccess("Moved view to particle")
       } catch {
         case e: NumberFormatException => CommandFailure("Invalid number " + params.head)
@@ -130,15 +133,54 @@ class Universe(val enableGraphics: Boolean = true, val runUntil: Int = 0, var ma
       CommandSuccess(s"Set max UPS to -1")
     }),
     Command("pauseCollision", 0, (params: List[String]) => {
-      pauseOnNextCollision = !pauseOnNextCollision
+      _pauseOnNextCollision = !pauseOnNextCollision
       CommandSuccess(s"Set pauseOnNextCollision to $pauseOnNextCollision")
+    }),
+    Command("zoom", 1, (params: List[String]) => {
+      try {
+        val zoom = params.head.toDouble
+        Render.setZoom(zoom)
+        totalZoom = zoom
+        CommandSuccess("Changed zoom to " + zoom)
+      } catch {
+        case e: NumberFormatException => CommandFailure("Invalid number " + params.head)
+      }
+    }),
+    Command("scale", 1, (params: List[String]) => {
+      val scale = params.head
+      scale match {
+        case "mm" => {Render.setZoom(1000); totalZoom=1000; CommandSuccess("Set scale to milimetres")}
+        case "cm" => {Render.setZoom(100); totalZoom=100; CommandSuccess("Set scale to centimetres")}
+        case "m" => {Render.setZoom(1); totalZoom=1; CommandSuccess("Set scale to metres")}
+        case "km" => {Render.setZoom(0.001); totalZoom=0.001; CommandSuccess("Set scale to kilometres")}
+        case _ => CommandFailure("Unknown scale mode: " + scale)
+      }
+    }),
+    Command("exit", 0, (params: List[String]) => {
+      System.exit(0)
+      CommandSuccess("Exiting...")
+    }),
+    Command("run", 1, (params: List[String]) => {
+      running = false
+      Collection.next = params.head
+      CommandSuccess("Changing simulation")
+    }),
+    Command("simulations", 0, (params: List[String]) => {
+      println("Available simulations")
+      Collection.simulations.keys.foreach(S => println(s"* $S"))
+      CommandSuccess("Printed available simulations to console")
+    }),
+    Command("restart", 0, (params: List[String]) => {
+      running = false
+      if(Collection.next == "") Collection.next = "--restart--"
+      CommandSuccess("Restarting simulation")
     })
   )
 
   val uXManager = new UXManager(commands, this)
 
   private val _pathTrackers: ListBuffer[PathTracker] = ListBuffer()
-  val pathTrackers:List[PathTracker] = _pathTrackers.toList
+  def pathTrackers:List[PathTracker] = _pathTrackers.toList
 
   def registerPathTracker(tracker: PathTracker) = _pathTrackers.append(tracker)
 
@@ -146,6 +188,10 @@ class Universe(val enableGraphics: Boolean = true, val runUntil: Int = 0, var ma
     _tickNum += 1
     if (runUntil != 0 && tickNum % 1000 == 0) {
       println(s"Ticks Remaining ${runUntil - tickNum}")
+    }
+
+    for (tracker <- pathTrackers) {
+      tracker.update()
     }
 
     val pairs = particles.combinations(2).toList
@@ -167,23 +213,19 @@ class Universe(val enableGraphics: Boolean = true, val runUntil: Int = 0, var ma
       particle.runTick()
     }
 
-    for (tracker <- pathTrackers) {
-      tracker.update()
-    }
   }
 
-
+  private var running = true
 
   def mainloop(): Unit = {
     if (enableGraphics)
       graphicsManager.init()
     show()
-
-    var running = true
+    Keyboard.create()
 
     while (running && (runUntil == 0 || tickNum < runUntil)) {
 
-      running = !enableGraphics || !graphicsManager.render (() => {
+      val closeRequested = enableGraphics && graphicsManager.render (() => {
         for (particle <- particles) {
           particle.render()
         }
@@ -202,10 +244,18 @@ class Universe(val enableGraphics: Boolean = true, val runUntil: Int = 0, var ma
         }
 
       })
+
+      if (closeRequested){
+        running = false
+        Collection.next = ""
+      }
+
       updateSync.call()
       if (enableGraphics)
         uxSync.call()
     }
+
+    graphicsManager.cleanUp()
 
   }
 
@@ -215,20 +265,24 @@ class Universe(val enableGraphics: Boolean = true, val runUntil: Int = 0, var ma
     graphicsManager.setTitle(s"FPS : ${graphicsManager.fps.toString} | UPS : ${updateSync.callsLastSecond} | Max UPS : $maxUPS | Timing Modifier : ${updateSync.timingModifier} | Time Multiplier : $timeMultiplier | Zoom : $totalZoom")
     uXManager.update()
     if (_tracker.isDefined) {
-      Render.setOffset((_tracker.get.position - Vect(500 * totalZoom, 500* totalZoom)) * -1)
+      Render.setOffset((_tracker.get.position * totalZoom - Vect(graphicsManager.displaySettings.width / 2, graphicsManager.displaySettings.height / 2)) * -1)
+      //Render.setOffset((_tracker.get.position - Vect(500 / totalZoom, 500 / totalZoom)) * -1)
     }
   }
 
   def show(): Unit = {
     var totalMomentum: Vect = Vect.ZERO
+    var totalKE: Double = 0
 
     println("Particles")
     for (p <- particles.zipWithIndex) {
-      println(s"${p._2} -> Position ${p._1.position} | Velocity ${p._1.velocity}")
+      println(s"${p._2} -> Position ${p._1.position} | Velocity ${p._1.velocity} (${p._1.velocity.length})")
       totalMomentum += p._1.momentum
+      totalKE += 0.5 * p._1.velocity.squared * p._1.mass
     }
 
     println(s"Total Momentum: ${totalMomentum.length}")
+    println(s"Total KE: $totalKE")
 
     println(Render.offset)
   }

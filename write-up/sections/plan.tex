@@ -1,10 +1,10 @@
 \section{Plan}
-	The plan for this project is to simulate the motion of round particles in two dimensions. The particles will exert Newtonian gravity on each other and will be able to collide. This will all be implemented using Newtonian mechanics, namely Newton's second law and the kinematic laws of motion.
+	This project aims to simulate the motion of round particles in two dimensions. The particles will exert Newtonian gravity on each other and will be able to collide. This will all be implemented using Newtonian mechanics, namely Newton's second law and the kinematic laws of motion.
 	
 	For the motion I will assume that acceleration is constant for 1 second and so the simulation will update in steps, each representing 1s. It may be possible in the future to decrease this for more accurate simulations (or increase it for faster ones).
 	
 	I am going to build this in with Scala, a JVM programming language. The advantage of Scala is that it is multi-paradigm, allowing me to use OOP and functional programming concepts. For the graphics I will use an OpenGL wrapper library called LWJGL\footnote{\url{https://www.lwjgl.org/}}.
 	
-	Using this will allow me to watch the simulation in real-time rather than look at the data it outputs after the fact. I may implement a way of getting the raw data out of the simulation as well so that I can simulate real situations with greater ease.
+	Using this will allow me to watch the simulation in real time rather than look at the data it outputs after the fact. I may implement a way of getting the raw data out of the simulation as well so that I can simulate real situations with greater ease.
 	
 	Below is an overview of the features that I implemented in the program. They are covered in the order that I implemented them.

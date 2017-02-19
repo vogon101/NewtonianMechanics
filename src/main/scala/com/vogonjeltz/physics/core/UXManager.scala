@@ -33,7 +33,7 @@ class UXManager(val commands: List[Command], val universe: Universe) {
     doKeyboard()
   }
 
-  def runCommand(): Option[CommandResult] = {
+  def onEnterKey(): Option[CommandResult] = {
     if (command == "") {
       val inputs = inputBuilder.toString().split(" ")
       _command = inputs.head
@@ -61,14 +61,37 @@ class UXManager(val commands: List[Command], val universe: Universe) {
 
   }
 
+  def runCommand(commandString: String, params: List[String]): CommandResult = {
+
+    val commandOption = commands.find(_.name == commandString)
+    if (commandOption.isEmpty)
+      return CommandFailure(s"Invalid command '$commandString'")
+
+    val command = commandOption.get
+
+    if (params.length != command.paramLength)
+      return CommandFailure(s"Wrong number of params for $commandString")
+
+    val res = command.f(params)
+    _lastRes = Some(res)
+    res
+
+  }
+
   def doKeyboard(): Unit ={
     while(Keyboard.next()) {
       if (Keyboard.getEventKeyState) {
         if (Keyboard.getEventKey == Keyboard.KEY_EQUALS && Keyboard.getEventKeyState) {
           if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            Render.setZoom(0.5)
-            //universe.moveSpeed *= 0.9
-            universe.totalZoom *= 0.5
+            if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+              Render.changeZoom(1)
+              universe.totalZoom += 1
+            }
+            else {
+              Render.setZoom(1.1 * universe.totalZoom)
+              //universe.moveSpeed *= 0.9
+              universe.totalZoom = Render.zoom.x
+            }
           } else {
             universe.maxUPS += 100
             universe.updateSync.setRate(universe.maxUPS)
@@ -77,9 +100,14 @@ class UXManager(val commands: List[Command], val universe: Universe) {
         else if (Keyboard.getEventKey == Keyboard.KEY_MINUS && Keyboard.getEventKeyState) {
           if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             if(Render.zoom.x > 0.1) {
-              Render.setZoom(-0.5)
-              universe.moveSpeed *= 1.5
-              universe.totalZoom *= 1.3
+              if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+                Render.changeZoom(-1)
+                universe.totalZoom -= 1
+              } else {
+                Render.setZoom(0.9 * universe.totalZoom)
+                //universe.moveSpeed *= 0.9
+                universe.totalZoom = Render.zoom.x
+              }
             }
           } else if (universe.maxUPS > 99) {
             universe.maxUPS -= 100
@@ -95,7 +123,7 @@ class UXManager(val commands: List[Command], val universe: Universe) {
             inputBuilder.length -= 1
         }
         else if (Keyboard.getEventKey == Keyboard.KEY_RETURN) {
-          _lastRes = runCommand()
+          _lastRes = onEnterKey()
           inputBuilder.clear()
         }
       }

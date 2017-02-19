@@ -3,7 +3,7 @@
 	\sloppy
 	All of the source code is available at \burl{https://github.com/vogon101/NewtonianMechanics}
 	
-	Below is a list of a few of the core classes in the simulation
+	Below is a list of the core classes in the simulation with an explanation of their function within the simulation.
 	
 	\subsection{Universe}
 		\fussy	
@@ -11,9 +11,9 @@
 		
 	\subsection{Particle}
 		
-		The Particle class represents every single object in the system. The particles all have a ParticleType which defines their intrinsic properties: radius, mass, colour as well as a position vector. Each particle is able to render itself which involves drawing the appropriate circle at its location, the path that it has been on and all of the forces acting on it.
+		The Particle class represents every single object in the system. The particles all have a \code{ParticleType} which defines their intrinsic properties: radius, mass and colour. They also have a position vector and initial velocity. Each particle is able to render itself which involves drawing the appropriate circle at its location, the path that it has been on and all of the forces acting on it. It also contains all of the key physics in the simulation.
 		\linebreak\linebreak
-		The key physics is contained in the methods interact(that: Particle) and runTick():
+		The key physics is contained in the methods \code{interact(that: Particle)} and \code{runTick()}:
 		
 		\subparagraph{interact}
 		
@@ -55,7 +55,7 @@
 		
 		\subparagraph{GraphicsManager} 
 			
-			The graphics manager class controls the basic screen setup and the standard OpenGL commands that need to be called to simply get rendering working.
+			This class controls the basic screen setup and the standard OpenGL commands that need to be called to simply get rendering working.
 		
 		\subparagraph{Sync} 
 		
@@ -71,5 +71,5 @@
 		
 		\subparagraph{Render} 
 		
-			The Render object is a static collection of utilities that make rendering easier to work with, they abstract away from the details of OpenGL so that code is cleaner and easier to debug
+			The Render object is a static collection of utilities that makes rendering code easier to work with, it abstracts away from the details of OpenGL so that code is cleaner and easier to debug.
 	

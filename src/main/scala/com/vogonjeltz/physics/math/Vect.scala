@@ -58,6 +58,8 @@ case class Vect(x: Double, y: Double) {
 
   def unary_- : Vect = Vect(-x, -y)
 
+  def squared : Double = this dot this
+
   def theta: Rotation = {
     val angle = Rad(atan(Math.abs(y/x)))
     //println(angle.toDeg)
@@ -85,6 +87,10 @@ object Vect {
 
   def fromAMF(theta: Rotation, length: Double): Vect =
     Vect(length * cos(theta.toRad), length * sin(theta.toRad))
+
+  //def unapply(arg: Vect): Option[(Double, Double)] = Some((arg.x, arg.y))
+
+
 
   implicit class VectHelper(d: Double) {
 

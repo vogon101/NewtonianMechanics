@@ -10,30 +10,52 @@ import scala.collection.mutable.ListBuffer
 /**
   * Created by Freddie on 05/02/2017.
   */
-class PathTracker(val particle: Particle, val maxLength: Int = 0, val addEvery: Int = 3600) {
+class PathTracker(val particles: List[Particle], val maxLength: Int = 0, val addEvery: Int = 3600) {
 
-  private var counter = 0
+  private var counter= 0
 
-  private val _path: ListBuffer[Vect] = ListBuffer()
+  private val _path: List[ListBuffer[Vect]] = for (p <- particles) yield ListBuffer[Vect]()
 
-  def path: List[Vect] = _path.toList
+  def paths: List[List[Vect]] = _path.map(_.toList)
 
-  def addPoint(v: Vect) =
-    if ((maxLength == 0 || path.length < maxLength) && counter >= addEvery) {
-      _path.append(v)
-      counter = 0
+
+
+  def update(): Unit = {
+    val doAdd = (maxLength == 0 || paths.head.length < maxLength) && counter >= addEvery
+    for ((p, i) <- particles.zipWithIndex) {
+      if (doAdd) {
+        _path(i).append(p.position)
+      }
     }
+    if(doAdd) counter = 0
     else counter += 1
+  }
 
-  def update(): Unit = addPoint(particle.position)
 
   def writeToCsv(filePath: String): Unit ={
 
     val pw = new PrintWriter(new File(filePath))
     val sb = new StringBuilder()
 
-    for (i <- path) {
-      sb.append(s"${i.x},${i.y}\n")
+    val rows = ListBuffer[ListBuffer[Vect]]()
+    for (path <- paths) {
+      for ((point, index) <- path.zipWithIndex) {
+        if (!rows.isDefinedAt(index)) {
+          rows.append(ListBuffer())
+        }
+        rows(index).append(point)
+      }
+    }
+
+    println(rows(0).length)
+
+    for (row <- rows) {
+      for (vect <- row) {
+        val x = vect.x
+        val y = vect.y
+        sb.append(s"$x,$y,")
+      }
+      sb.append("\n")
     }
 
     pw.write(sb.toString())

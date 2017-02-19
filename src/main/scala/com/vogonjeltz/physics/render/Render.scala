@@ -61,6 +61,9 @@ object Render {
   }
 
   private var fontMap = HashMap[Int, TrueTypeFont]()
+
+  def clearFontCache(): Unit = fontMap = HashMap()
+
   private def getTTFont( awtFont: Font ): TrueTypeFont = {
     if ( !fontMap.contains( awtFont.hashCode ) ) {
       val ttfont = new TrueTypeFont( awtFont, false )
@@ -86,7 +89,8 @@ object Render {
   def setOffset(v:Vect) = _offset = v
   def offset = _offset
 
-  def setZoom(s: Double): Unit = _zoom += Vect(s,s)
+  def setZoom(s: Double): Unit = _zoom = Vect(s,s)
+  def changeZoom(s: Double): Unit = _zoom += Vect(s,s)
   def zoom = _zoom
   def clearZoom(): Unit = _zoom = Vect(1,1)
 
